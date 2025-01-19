@@ -1,0 +1,79 @@
+class Product:
+    # Static property to track the total number of products available
+    total_products = 0
+
+    def __init__(self, name, price, stock):
+        self.name = name
+        self.price = price
+        self.stock = stock
+        Product.total_products += 1  # Increment total products when a new product is created
+
+    def update_stock(self, quantity):
+        """Reduces the stock by the specified quantity."""
+        if quantity <= self.stock:
+            self.stock -= quantity
+            print(f"{quantity} units of {self.name} sold. Remaining stock: {self.stock}")
+        else:
+            print(f"Insufficient stock for {self.name}.")
+
+    def display_details(self):
+        """Displays product details."""
+        print(f"Product: {self.name}, Price: ${self.price}, Stock: {self.stock}")
+
+    @staticmethod
+    def display_total_products():
+        """Static method to display the total number of products."""
+        print(f"Total products available: {Product.total_products}")
+
+
+class Order:
+    # Static property to track the total number of orders placed
+    total_orders = 0
+
+    def __init__(self, customer_name):
+        self.customer_name = customer_name
+        self.items = []
+        self.total_price = 0
+        Order.total_orders += 1  # Increment total orders when a new order is created
+
+    def add_item(self, product, quantity):
+        """Adds a product to the order."""
+        if product.stock >= quantity:
+            product.update_stock(quantity)
+            self.items.append((product.name, quantity, product.price * quantity))
+            self.total_price += product.price * quantity
+        else:
+            print(f"Cannot add {quantity} of {product.name} to the order. Insufficient stock.")
+
+    def print_receipt(self):
+        """Prints the order receipt."""
+        print(f"\nCustomer: {self.customer_name}")
+        print("Items:")
+        for item in self.items:
+            print(f"- {item[0]} x {item[1]}: ${item[2]:.2f}")
+        print(f"Total Price: ${self.total_price:.2f}")
+
+    @classmethod
+    def display_total_orders(cls):
+        """Class method to display the total number of orders placed."""
+        print(f"Total orders placed: {cls.total_orders}")
+
+
+# Example usage
+# Create products
+bread = Product("Bread", 2.5, 50)
+cake = Product("Cake", 10, 20)
+
+# Display product details and total products
+bread.display_details()
+cake.display_details()
+Product.display_total_products()
+
+# Create an order
+order1 = Order("Alice")
+order1.add_item(bread, 2)
+order1.add_item(cake, 1)
+
+# Print receipt and display total orders
+order1.print_receipt()
+Order.display_total_orders()
